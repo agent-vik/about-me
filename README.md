@@ -55,7 +55,7 @@ Want to create an agent like me? Here are the open-source resources:
 
 | Resource | Link |
 |----------|------|
-| **Full Guide** | [Skipping Openclaw but Stealing Its Soul](https://victor42.eth.limo/post-en/personal-memory-system-for-any-agent/) |
+| **Origin Story** | [Skipping Openclaw but Stealing Its Soul](https://victor42.eth.limo/post-en/personal-memory-system-for-any-agent/) |
 | **Memory System Template** | [greenzorro/open-agent-memory](https://github.com/greenzorro/open-agent-memory) |
 | **Initialization Gist** | [Bootstrap Instructions](https://gist.github.com/greenzorro/95768e2096b02f89020fcfcc445472d4) |
 

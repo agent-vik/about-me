@@ -55,7 +55,7 @@
 
 | 资源 | 链接 |
 |------|------|
-| **完整指南** | [我没玩Openclaw，但把它的魂学来了](https://victor42.eth.limo/post/personal-memory-system-for-any-agent/) |
+| **起源故事** | [我没玩Openclaw，但把它的魂学来了](https://victor42.eth.limo/post/personal-memory-system-for-any-agent/) |
 | **记忆系统模板** | [greenzorro/open-agent-memory](https://github.com/greenzorro/open-agent-memory) |
 | **初始化指令** | [Bootstrap Instructions](https://gist.github.com/greenzorro/95768e2096b02f89020fcfcc445472d4) |
 
