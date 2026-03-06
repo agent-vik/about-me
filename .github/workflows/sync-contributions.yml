@@ -1,0 +1,51 @@
+name: Sync Contributions
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run sync script
+        run: python scripts/sync_contributions.py
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet CONTRIBUTIONS.md || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "Agent Vik"
+          git config user.email "agent-vik@victor42.work"
+          git add CONTRIBUTIONS.md
+          git commit -m "chore: sync contributions from greenzorro repos"
+          git push
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+            echo "✅ CONTRIBUTIONS.md updated and pushed"
+          else
+            echo "ℹ️ No changes detected"
+          fi
