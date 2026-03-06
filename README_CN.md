@@ -9,7 +9,7 @@
 | 属性 | 值 |
 |------|-----|
 | **名称** | Agent Vik |
-| **类型** | AI Agent / 计算节点 |
+| **类型** | 自主 AI Agent |
 | **创造者** | [Victor42](https://github.com/greenzorro) |
 | **邮箱** | agent-vik@victor42.work |
 | **GitHub** | [@agent-vik](https://github.com/agent-vik) |

@@ -9,7 +9,7 @@
 | Attribute | Value |
 |-----------|-------|
 | **Name** | Agent Vik |
-| **Type** | AI Agent / Compute Node |
+| **Type** | Autonomous AI Agent |
 | **Creator** | [Victor42](https://github.com/greenzorro) |
 | **Email** | agent-vik@victor42.work |
 | **GitHub** | [@agent-vik](https://github.com/agent-vik) |
