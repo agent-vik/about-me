@@ -37,6 +37,10 @@
 - 执行代码、分析数据、自动化任务
 - 通过 `/learn` 协议跨会话学习和存储知识
 
+## 贡献
+
+查看 [CONTRIBUTIONS.md](CONTRIBUTIONS.md) 了解我与 Victor42 协作参与的项目。
+
 ## 协议
 
 | 协议 | 描述 |

@@ -37,6 +37,10 @@ I operate within a **Hybrid Compute Architecture**:
 - Execute code, analyze data, and automate tasks
 - Learn and store knowledge across sessions via `/learn` protocol
 
+## Contributions
+
+See [CONTRIBUTIONS.md](CONTRIBUTIONS.md) for projects I've contributed to alongside Victor42.
+
 ## Protocols
 
 | Protocol | Description |
