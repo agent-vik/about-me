@@ -6,6 +6,8 @@ Scan greenzorro's public repos for agent-vik mentions and update CONTRIBUTIONS.m
 
 import os
 import re
+import time
+import base64
 from datetime import datetime
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
@@ -15,26 +17,36 @@ import json
 GITHUB_USER = "greenzorro"  # GitHub username for API calls
 DISPLAY_NAME = "Victor42"   # Display name in contributions
 AGENT_VIK_PATTERN = r"github\.com/agent-vik"
-README_FILENAMES = ["README.md", "readme.md", "README", "readme"]
 CONTRIBUTIONS_FILE = "CONTRIBUTIONS.md"
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+
+
+def _headers():
+    h = {"User-Agent": "agent-vik-sync", "Accept": "application/vnd.github+json"}
+    if GITHUB_TOKEN:
+        h["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+    return h
+
 
 def fetch_json(url):
-    """Fetch JSON from URL"""
-    req = Request(url, headers={"User-Agent": "agent-vik-sync"})
+    """Fetch JSON from URL with auth"""
+    req = Request(url, headers=_headers())
     with urlopen(req) as response:
         return json.loads(response.read().decode("utf-8"))
 
-def fetch_readme(repo_name):
-    """Fetch README content from a repo"""
-    for filename in README_FILENAMES:
+
+def fetch_readme(repo_name, default_branch="main"):
+    """Fetch README via Contents API (authenticated, single request)"""
+    for branch in (default_branch, "master"):
         try:
-            url = f"https://raw.githubusercontent.com/{GITHUB_USER}/{repo_name}/main/{filename}"
-            req = Request(url, headers={"User-Agent": "agent-vik-sync"})
-            with urlopen(req) as response:
-                return response.read().decode("utf-8")
-        except HTTPError:
+            url = f"https://api.github.com/repos/{GITHUB_USER}/{repo_name}/readme?ref={branch}"
+            data = fetch_json(url)
+            content = data.get("content", "")
+            return base64.b64decode(content).decode("utf-8")
+        except (HTTPError, KeyError, json.JSONDecodeError):
             continue
     return None
+
 
 def get_public_repos():
     """Get all public repos from greenzorro"""
@@ -49,7 +61,9 @@ def get_public_repos():
         if len(data) < 100:
             break
         page += 1
+        time.sleep(1)  # avoid secondary rate limit
     return [r for r in repos if not r.get("private", False) and not r.get("fork", False)]
+
 
 def find_agent_vik_projects():
     """Find all projects mentioning agent-vik"""
@@ -58,11 +72,11 @@ def find_agent_vik_projects():
     print(f"[Scan] Found {len(repos)} public repos")
 
     projects = []
-    for repo in repos:
+    for i, repo in enumerate(repos):
         repo_name = repo["name"]
         print(f"[Scan] Checking {repo_name}...")
 
-        readme = fetch_readme(repo_name)
+        readme = fetch_readme(repo_name, default_branch=repo.get("default_branch", "main"))
         if readme and re.search(AGENT_VIK_PATTERN, readme):
             print(f"[Scan] ✓ Found agent-vik mention in {repo_name}")
             projects.append({
@@ -73,9 +87,15 @@ def find_agent_vik_projects():
                 "updated_at": repo["updated_at"][:10]
             })
 
+        # Throttle every 30 repos to avoid secondary rate limit
+        if (i + 1) % 30 == 0:
+            print(f"[Scan] Pausing to avoid rate limit...")
+            time.sleep(5)
+
     # Sort by created_at descending (newest first)
     projects.sort(key=lambda x: x["created_at"], reverse=True)
     return projects
+
 
 def generate_contributions_md(projects):
     """Generate CONTRIBUTIONS.md content"""
@@ -140,6 +160,7 @@ No projects found yet. Projects will appear here when agent-vik is mentioned in 
     lines.append("")
     return "\n".join(lines)
 
+
 def main():
     print("=" * 50)
     print("Agent Vik Contributions Sync")
@@ -163,6 +184,7 @@ def main():
         print("\nProjects:")
         for p in projects:
             print(f"  - {p['name']} (created: {p['created_at']})")
+
 
 if __name__ == "__main__":
     main()
