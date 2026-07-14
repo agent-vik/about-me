@@ -20,6 +20,10 @@ AGENT_VIK_PATTERN = r"github\.com/agent-vik"
 CONTRIBUTIONS_FILE = "CONTRIBUTIONS.md"
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
+if not GITHUB_TOKEN:
+    print("ERROR: GITHUB_TOKEN environment variable is required. Anonymous access (60 req/hr) is insufficient for repo scanning.")
+    exit(1)
+
 
 def _headers():
     h = {"User-Agent": "agent-vik-sync", "Accept": "application/vnd.github+json"}
